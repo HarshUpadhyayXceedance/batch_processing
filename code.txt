@@ -1,0 +1,130 @@
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-product-detail-form',
+  imports:[ReactiveFormsModule],
+  templateUrl: './product-detail-form.component.html',
+  styleUrls: ['./product-detail-form.component.css']
+})
+export class ProductDetailFormComponent {
+  productForm: FormGroup;
+
+  constructor(private fb: FormBuilder, private http: HttpClient) {
+    this.productForm = this.fb.group({
+      productId: [''],
+      title: [''],
+      description: [''],
+      price: [''],
+      discount: ['']
+    });
+  }
+
+  submitProduct() {
+    const productData = this.productForm.value;
+    this.http.post('http://localhost:8080/api/products', productData)
+      .subscribe(response => {
+        console.log('Product saved successfully', response);
+      }, error => {
+        console.error('Error saving product', error);
+      });
+  }
+}
+
+<div class="container">
+    <h2>Product Detail Form</h2>
+    <form [formGroup]="productForm" (ngSubmit)="submitProduct()">
+      <div>
+        <label for="productId">Product ID:</label>
+        <input id="productId" formControlName="productId" type="text">
+      </div>
+      <div>
+        <label for="title">Title:</label>
+        <input id="title" formControlName="title" type="text">
+      </div>
+      <div>
+        <label for="description">Description:</label>
+        <input id="description" formControlName="description" type="text">
+      </div>
+      <div>
+        <label for="price">Price:</label>
+        <input id="price" formControlName="price" type="number">
+      </div>
+      <div>
+        <label for="discount">Discount (%) :</label>
+        <input id="discount" formControlName="discount" type="number">
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+.container {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 500px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+div {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+button {
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
